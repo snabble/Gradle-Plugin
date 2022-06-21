@@ -17,4 +17,4 @@ jobs:
       - name: Build
         run: ./gradlew build
       - name: Publish to Maven Repository
-        run: ./gradlew publishPlugins
+        run: ./gradlew publishPlugins -Pgradle.publish.key=${{secrets.DEPLOY_KEY}} -Pgradle.publish.secret=${{secrets.DEPLOY_SECRET}}
