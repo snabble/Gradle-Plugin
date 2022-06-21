@@ -8,6 +8,12 @@ plugins {
 group 'io.snabble'
 version '1.0.0'
 
+pluginBundle {
+    website = 'https://docs.snabble.io/docs/android/'
+    vcsUrl = 'https://github.com/snabble/Gradle-Plugin.git'
+    tags = ['snabble', 'self-scanning']
+}
+
 publishing {
     publications {
         maven(MavenPublication) {
