@@ -1,65 +1,29 @@
-plugins {
-    id 'kotlin'
-    id 'maven-publish'
-    id 'java-gradle-plugin'
-    id 'com.gradle.plugin-publish' version '0.10.0'
-}
-
-group 'io.snabble'
-version project.pluginVersion
-
-publishing {
-    publications {
-        maven(MavenPublication) {
-            groupId 'io.snabble'
-            artifactId 'setup'
-            version project.pluginVersion
-
-            from components.java
-        }
-    }
-}
-
-dependencies {
-    implementation(gradleApi())
-    implementation(localGroovy())
-    api "org.jetbrains.kotlin:kotlin-stdlib"
-    api "com.squareup.okhttp3:okhttp:${project.okhttpVersion}"
-    compileOnly 'com.android.tools.build:gradle:7.1.0'
-}
-
-gradlePlugin {
-    plugins {
-        setup {
-            id = 'io.snabble.setup'
-            displayName = 'Snabble Setup Helper'
-            description = 'Plugin for simlified configutation of the Snabble Android SDK and metadata downloader'
-            implementationClass = 'io.snabble.setup.SnabblePlugin'
-        }
-    }
-}
-
-repositories {
-    mavenCentral()
-    mavenLocal()
-    google()
-}
-
-sourceSets {
-    main.java.srcDirs += 'src/main/kotlin/'
-}
-
-task generateResources {
+buildscript {
     ext {
-        propFile = file("$buildDir/generated/snabble.properties")
+        compose_version = '1.2.0-beta03'
     }
-    outputs.file propFile
-    doLast {
-        mkdir propFile.parentFile
-        propFile.text = "version=$project.version"
+    ext.kotlin_version = '1.6.21'
+
+    repositories {
+        google()
+        mavenCentral()
+        //maven { url 'https://plugins.gradle.org/m2/' }
+    }
+
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        //classpath "org.jetbrains.dokka:dokka-gradle-plugin:$kotlin_version"
+        //classpath "org.jetbrains.dokka:dokka-base:$kotlin_version"
+        //classpath 'com.android.tools.build:gradle:7.2.1'
+        //classpath 'gradle.plugin.com.github.jlouns:gradle-cross-platform-exec-plugin:0.5.0'
+        //classpath 'gradle.plugin.gmazzo:sqlite-plugin:0.2'
     }
 }
 
-processResources {
-    from files(generateResources)
+plugins {
+    id 'maven-publish'
+}
+
+task clean(type: Delete) {
+    delete rootProject.buildDir
 }
