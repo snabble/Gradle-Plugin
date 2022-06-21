@@ -12,7 +12,7 @@ Using the [plugins DSL](https://docs.gradle.org/current/userguide/plugins.html#s
 ```groovy
 plugins {
   id 'com.android.application'
-  id 'io.snabble.setup' version '0.1.0' // add this line
+  id 'io.snabble.setup' version '1.0.0' // add this line
 }
 ```
 
