@@ -29,8 +29,6 @@ dependencies {
 }
 
 gradlePlugin {
-    website = 'https://github.com/snabble/Gradle-Plugin'
-    vcsUrl = 'https://github.com/snabble/Gradle-Plugin'
     plugins {
         setup {
             id = 'io.snabble.setup'
