@@ -2,7 +2,7 @@ plugins {
     id 'kotlin'
     id 'maven-publish'
     id 'java-gradle-plugin'
-    id 'com.gradle.plugin-publish' version '1.0.0-rc-3'
+    id 'com.gradle.plugin-publish' version '0.21.0'
 }
 
 group 'io.snabble'
