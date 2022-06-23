@@ -1,7 +1,7 @@
 # Snabble Gradle Plugin [![License: MIT,][license-img]][license-url] [![at Gradle Plugin Portal,][gradle-img]][gradle-url]
 
 The snabble Gradle Plugin is for the simplest setup of the snabble Android SDK. With this plugin you can reduce the
-SDK integration to 4 lines in your codebase. You can also download the manifest in your CI to bundle the latest metadata
+SDK integration to 5 lines in your codebase. You can also download the manifest in your CI to bundle the latest metadata
 with your app so that your user it can use your app with all required meta data.
 
 ## Usage
@@ -12,7 +12,7 @@ Using the [plugins DSL](https://docs.gradle.org/current/userguide/plugins.html#s
 ```groovy
 plugins {
   id 'com.android.application'
-  id 'io.snabble.setup' version '1.0.0' // add this line
+  id 'io.snabble.setup' version '1.0.1' // add this line
 }
 ```
 
@@ -22,6 +22,15 @@ The absolut minimum is to add those two lines to make the SDK already working:
 ```groovy
 snabble.production.appId = 'your-app-id'
 snabble.production.secret = 'your-app-secret'
+```
+
+When you use to add the dependency:
+
+```groovy
+dependencies {
+   // your other dependencies
+   implementation 'io.snabble.sdk:ui:{latestVersion}' // add this line
+}
 ```
 
 To start the combined scanner you just need to start our activity:

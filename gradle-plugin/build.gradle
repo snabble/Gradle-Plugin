@@ -6,7 +6,7 @@ plugins {
 }
 
 group 'io.snabble'
-version '1.0.0'
+version '1.0.1'
 
 pluginBundle {
     website = 'https://docs.snabble.io/docs/android/'
@@ -29,8 +29,8 @@ publishing {
 dependencies {
     implementation(gradleApi())
     implementation(localGroovy())
-    api "org.jetbrains.kotlin:kotlin-stdlib"
-    api "com.squareup.okhttp3:okhttp:4.10.0"
+    api 'org.jetbrains.kotlin:kotlin-stdlib'
+    api 'com.squareup.okhttp3:okhttp:4.10.0'
     compileOnly 'com.android.tools.build:gradle:7.1.0'
 }
 
@@ -68,4 +68,10 @@ task generateResources {
 
 processResources {
     from files(generateResources)
+}
+
+java {
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(8))
+    }
 }
