@@ -1,5 +1,5 @@
 buildscript {
-    ext.kotlin_version = '1.6.21'
+    ext.kotlin_version = '2.3.21'
 
     repositories {
         google()
@@ -15,6 +15,6 @@ plugins {
     id 'maven-publish'
 }
 
-task clean(type: Delete) {
-    delete rootProject.buildDir
+tasks.register('clean', Delete) {
+    delete rootProject.layout.buildDirectory
 }

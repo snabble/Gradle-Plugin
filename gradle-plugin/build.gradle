@@ -2,17 +2,11 @@ plugins {
     id 'kotlin'
     id 'maven-publish'
     id 'java-gradle-plugin'
-    id 'com.gradle.plugin-publish' version '0.21.0'
+    id 'com.gradle.plugin-publish' version '2.1.1'
 }
 
 group 'io.snabble'
-version '1.0.1'
-
-pluginBundle {
-    website = 'https://docs.snabble.io/docs/android/'
-    vcsUrl = 'https://github.com/snabble/Gradle-Plugin.git'
-    tags = ['snabble', 'self-scanning']
-}
+version '1.0.2'
 
 publishing {
     publications {
@@ -30,17 +24,21 @@ dependencies {
     implementation(gradleApi())
     implementation(localGroovy())
     api 'org.jetbrains.kotlin:kotlin-stdlib'
-    api 'com.squareup.okhttp3:okhttp:4.10.0'
-    compileOnly 'com.android.tools.build:gradle:7.1.0'
+    api 'com.squareup.okhttp3:okhttp:5.3.2'
+    compileOnly 'com.android.tools.build:gradle:9.2.1'
 }
 
 gradlePlugin {
+    website = 'https://docs.snabble.io/docs/android/'
+    vcsUrl = 'https://github.com/snabble/Gradle-Plugin.git'
+
     plugins {
         setup {
             id = 'io.snabble.setup'
             displayName = 'Snabble Setup Helper'
             description = 'Plugin for simlified configutation of the Snabble Android SDK and metadata downloader'
             implementationClass = 'io.snabble.setup.SnabblePlugin'
+            tags = ['snabble', 'self-scanning']
         }
     }
 }
@@ -55,9 +53,9 @@ sourceSets {
     main.java.srcDirs += 'src/main/kotlin/'
 }
 
-task generateResources {
+tasks.register('generateResources') {
     ext {
-        propFile = file("$buildDir/generated/snabble.properties")
+        propFile = file("$layout.buildDirectory/generated/snabble.properties")
     }
     outputs.file propFile
     doLast {
@@ -72,6 +70,6 @@ processResources {
 
 java {
     toolchain {
-        languageVersion.set(JavaLanguageVersion.of(8))
+        languageVersion = JavaLanguageVersion.of(17)
     }
 }

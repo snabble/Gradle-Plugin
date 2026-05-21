@@ -1,10 +1,13 @@
 package io.snabble.setup
 
 import org.gradle.api.DefaultTask
-import org.gradle.api.provider.ListProperty
+import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.provider.Property
-import org.gradle.api.tasks.*
-import java.io.File
+import org.gradle.api.tasks.CacheableTask
+import org.gradle.api.tasks.Input
+import org.gradle.api.tasks.Optional
+import org.gradle.api.tasks.OutputDirectory
+import org.gradle.api.tasks.TaskAction
 
 /**
  * Generated the properties file for the SDK.
@@ -13,52 +16,66 @@ import java.io.File
 abstract class GenerateSnabbleConfigTask : DefaultTask() {
     @get:Input
     abstract val appId: Property<String>
+
     @get:Input
     abstract val secret: Property<String>
-    @get:Input
-    abstract val endpointBaseUrl: Property<String?>
-    @get:Input
-    @get:Optional
-    abstract val bundledMetadataAssetPath: Property<String?>
-    @get:Input
-    @get:Optional
-    abstract val generateSearchIndex: Property<Boolean?>
-    @get:Input
-    @get:Optional
-    abstract val maxProductDatabaseAge: Property<Long?>
-    @get:Input
-    @get:Optional
-    abstract val maxShoppingCartAge: Property<Long?>
-    @get:Input
-    @get:Optional
-    abstract val disableCertificatePinning: Property<Boolean?>
-    @get:Input
-    @get:Optional
-    abstract val vibrateToConfirmCartFilled: Property<Boolean?>
-    @get:Input
-    @get:Optional
-    abstract val loadActiveShops: Property<Boolean?>
-    @get:Input
-    @get:Optional
-    abstract val checkInRadius: Property<Float?>
-    @get:Input
-    @get:Optional
-    abstract val checkOutRadius: Property<Float?>
-    @get:Input
-    @get:Optional
-    abstract val lastSeenThreshold: Property<Long?>
-    @get:Input
-    @get:Optional
-    abstract val networkInterceptor: Property<String?>
-    @get:Input
-    @get:Optional
-    abstract val manualProductDatabaseUpdates: Property<Boolean?>
 
-    /**
-     * The path of the config file.
-     */
-    @get:OutputFile
-    abstract var configFile: File
+    @get:Input
+    abstract val endpointBaseUrl: Property<String>
+
+    @get:Input
+    @get:Optional
+    abstract val bundledMetadataAssetPath: Property<String>
+
+    @get:Input
+    @get:Optional
+    abstract val generateSearchIndex: Property<Boolean>
+
+    @get:Input
+    @get:Optional
+    abstract val maxProductDatabaseAge: Property<Long>
+
+    @get:Input
+    @get:Optional
+    abstract val maxShoppingCartAge: Property<Long>
+
+    @get:Input
+    @get:Optional
+    abstract val disableCertificatePinning: Property<Boolean>
+
+    @get:Input
+    @get:Optional
+    abstract val vibrateToConfirmCartFilled: Property<Boolean>
+
+    @get:Input
+    @get:Optional
+    abstract val loadActiveShops: Property<Boolean>
+
+    @get:Input
+    @get:Optional
+    abstract val checkInRadius: Property<Float>
+
+    @get:Input
+    @get:Optional
+    abstract val checkOutRadius: Property<Float>
+
+    @get:Input
+    @get:Optional
+    abstract val lastSeenThreshold: Property<Long>
+
+    @get:Input
+    @get:Optional
+    abstract val networkInterceptor: Property<String>
+
+    @get:Input
+    @get:Optional
+    abstract val manualProductDatabaseUpdates: Property<Boolean>
+
+    @get:OutputDirectory
+    abstract val outputDir: DirectoryProperty
+
+    @get:Input
+    abstract val environmentName: Property<String>
 
     /**
      * Write all the input values in a properties file on the path of [configFile].
@@ -88,6 +105,11 @@ abstract class GenerateSnabbleConfigTask : DefaultTask() {
         val config = properties.entries
             .filter { (_, value) -> value != null }
             .joinToString("\n") { (key, value) -> "$key=$value" }
-        configFile.writeText(config)
+
+        val target = outputDir.get().asFile
+            .resolve("raw")
+            .resolve("snabble_${environmentName.get().lowercase()}_config.properties")
+
+        target.writeText(config)
     }
 }

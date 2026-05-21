@@ -2,6 +2,7 @@ package io.snabble.setup
 
 import okhttp3.Request
 import org.gradle.api.DefaultTask
+import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.provider.Property
 import org.gradle.api.tasks.*
 import java.io.File
@@ -19,27 +20,27 @@ import java.util.concurrent.Future
  */
 @CacheableTask
 abstract class DownloadTask : DefaultTask() {
-    //init {
-    //    outputs.upToDateWhen { task ->
-    //        // TODO 24h caching
-    //        outputFile.exists()
-    //    }
-    //}
-
     @get:Input
     abstract val url: Property<String>
 
-    @get:OutputFile
-    abstract var outputFile: File
+    @get:OutputDirectory
+    abstract val outputDir: DirectoryProperty
+
+    @get:Input
+    abstract val environmentName: Property<String>
 
     /**
      * Start the download of the metadata.
      */
     @TaskAction
     fun download() {
-        val outputDirFile = outputFile.parentFile
-        if (!outputDirFile.exists() && !outputDirFile.mkdirs()) {
-            throw IOException("Could not create path $outputDirFile")
+        val target = outputDir.get().asFile
+            .resolve("raw")
+            .resolve("snabble_${environmentName.get().lowercase()}_metadata.json")
+
+        val parentDir = target.parentFile
+        if (!parentDir.exists() && !parentDir.mkdirs()) {
+            throw IOException("Could not create directory $parentDir")
         }
 
         val response = OkHttpClientFactory.createOkHttpClient()
@@ -50,7 +51,7 @@ abstract class DownloadTask : DefaultTask() {
             ).execute()
         if (response.isSuccessful) {
             val progressLogger = ProgressLoggerWrapper(logger, services, "Manifest")
-            response.body?.byteStream()?.safeToFileWithTempFile(outputFile, progressLogger)
+            response.body.byteStream().safeToFileWithTempFile(target, progressLogger)
         } else {
             logger.error("Failed to download '${url.get()}'. Server returned status ${response.code}")
         }
@@ -59,7 +60,7 @@ abstract class DownloadTask : DefaultTask() {
     /**
      * Copy bytes from an input stream to a file and log progress.
      *
-     * @param is the input stream to read
+     * @param this the input stream to read
      * @param destFile the file to write to
      * @param progressLogger progress logger
      * @throws IOException if an I/O error occurs
