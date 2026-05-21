@@ -74,7 +74,6 @@ abstract class GenerateSnabbleConfigTask : DefaultTask() {
     @get:OutputDirectory
     abstract val outputDir: DirectoryProperty
 
-
     @get:Input
     abstract val environmentName: Property<String>
 
