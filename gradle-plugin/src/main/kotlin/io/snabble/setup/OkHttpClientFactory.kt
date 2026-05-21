@@ -30,7 +30,7 @@ internal object OkHttpClientFactory {
         addInterceptor(UserAgentInterceptor())
         certificatePinner(CertificatePinner.Builder().apply {
             PINS.forEach { pin ->
-                Environment.values().forEach { env ->
+                Environment.entries.forEach { env ->
                     add(env.wildcardUrl, pin)
                 }
             }

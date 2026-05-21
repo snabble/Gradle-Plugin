@@ -49,7 +49,7 @@ class ProgressLoggerWrapper(
         try {
             // prior to Gradle 6.0
             progressLogger?.invoke("setLoggingHeader", description)
-        } catch (e: ReflectiveOperationException) {
+        } catch (_: ReflectiveOperationException) {
             logger.lifecycle(description)
         }
     }
@@ -57,7 +57,7 @@ class ProgressLoggerWrapper(
     /**
      * Invoke a method using reflection but don't throw any exceptions.
      * Just log errors instead.
-     * @param obj the object whose method should be invoked
+     * @param this the object whose method should be invoked
      * @param method the name of the method to invoke
      * @param args the arguments to pass to the method
      */
@@ -138,7 +138,7 @@ class ProgressLoggerWrapper(
     companion object {
         /**
          * Invoke a method using reflection
-         * @param obj the object whose method should be invoked
+         * @param this the object whose method should be invoked
          * @param method the name of the method to invoke
          * @param args the arguments to pass to the method
          * @return the method's return value

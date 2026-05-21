@@ -1,7 +1,5 @@
 package io.snabble.setup
 
-import java.util.concurrent.TimeUnit
-
 /**
  * Configuration of the snabble gradle plugin.
  */
