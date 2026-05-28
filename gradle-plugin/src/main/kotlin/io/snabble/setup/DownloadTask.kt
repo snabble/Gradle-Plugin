@@ -4,7 +4,10 @@ import okhttp3.Request
 import org.gradle.api.DefaultTask
 import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.provider.Property
-import org.gradle.api.tasks.*
+import org.gradle.api.tasks.CacheableTask
+import org.gradle.api.tasks.Input
+import org.gradle.api.tasks.OutputDirectory
+import org.gradle.api.tasks.TaskAction
 import java.io.File
 import java.io.FileInputStream
 import java.io.IOException
@@ -46,12 +49,23 @@ abstract class DownloadTask : DefaultTask() {
         val response = OkHttpClientFactory.createOkHttpClient()
             .newCall(
                 Request.Builder()
-                .url(url.get())
-                .build()
+                    .url(url.get())
+                    .build()
             ).execute()
         if (response.isSuccessful) {
             val progressLogger = ProgressLoggerWrapper(logger, services, "Manifest")
             response.body.byteStream().safeToFileWithTempFile(target, progressLogger)
+
+            outputDir.get().asFile
+                .resolve("raw")
+                .resolve("keep.xml")
+                .writeText(
+                    """<?xml version="1.0" encoding="utf-8"?>
+  <resources xmlns:tools="http://schemas.android.com/tools"
+      tools:keep="@raw/snabble_*" />
+  """
+                )
+
         } else {
             logger.error("Failed to download '${url.get()}'. Server returned status ${response.code}")
         }
@@ -129,7 +143,10 @@ abstract class DownloadTask : DefaultTask() {
      * @throws IOException if an I/O error occurs
      */
     @Throws(IOException::class)
-    private fun InputStream.safeToFileWithTempFile(destFile: File, progressLogger: ProgressLoggerWrapper) {
+    private fun InputStream.safeToFileWithTempFile(
+        destFile: File,
+        progressLogger: ProgressLoggerWrapper
+    ) {
         //create name of temporary file
         val tempFile = File.createTempFile(destFile.name, ".part", destFile.parentFile)
 
@@ -147,7 +164,8 @@ abstract class DownloadTask : DefaultTask() {
         } catch (e: IOException) {
             throw IOException(
                 "Failed to move temporary file '${tempFile.absolutePath}' to destination " +
-                        "file '${destFile.absolutePath}'.", e)
+                        "file '${destFile.absolutePath}'.", e
+            )
         }
     }
 
