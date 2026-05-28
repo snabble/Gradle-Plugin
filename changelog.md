@@ -1,6 +1,10 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## 1.0.3
+### Changes
+- Add keep rules to prevent generated files to be sorted out by r8
+
 ## 1.0.2
 ### Changes
 - Migrate to support Gradle 9.0 and higher
